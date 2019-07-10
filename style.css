@@ -1,0 +1,83 @@
+header img {
+  width: 130px;
+  height: 130px;
+  margin: 1em;
+}
+
+header p {
+  font-size: 1.5em;
+}
+
+header a {
+  color: black;
+  opacity: .7;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+.header__info {
+  display: inline-block;
+}
+
+.header__login {
+  margin-left: .5em;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 50px auto;
+}
+
+ul li {
+  list-style-type: none;
+}
+
+.card > * {
+  padding: 20px;
+}
+
+.card a {
+  font-size: 1.2em;
+}
+
+.card__description {
+  position: relative;
+  bottom: 30px;
+}
+
+.card__details > * {
+  margin-left: 5px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 100px;
+}
+
+.input {
+  width: 200px;
+  height: 38px;
+  margin-left: 8.7em;
+}
+
+hr {
+  margin: 25px;
+  background: grey;
+}
+
+@media only screen and (max-width: 600px) {
+  .search {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 15px 10px;
+  }
+  
+  .dropdown {
+    margin: 5px 122px;
+  } 
+}
