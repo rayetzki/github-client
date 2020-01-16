@@ -51,24 +51,29 @@ function logUser(userData) {
     </header>`
 }
 
+function logFilteredRepos(filteredObject) {
+  const { html_url, name, description, language, forks_count, stargazers_count, updated_at } = filteredObject
+  
+  return `
+    <div class="ui card">
+      <a card="card__name" href=${
+        html_url
+      } target="_blank"><i class="fas fa-book"></i> ${name}</a>
+      <p class="card__description">${
+        description ? description : "No description"
+      }</p>
+    <div class="card__details">  
+      <span><i class="fas ${
+        language ? "fa-circle" : "fa-code-branch"
+      }"></i> ${language || forks_count}</span>
+      <span><i class="fas fa-star"></i> ${stargazers_count}</span>
+      <span>Updated on ${new Date(updated_at).toLocaleDateString()}</span>
+    </div>
+    </div>`
+}
+
 function logRepos() {
-  const reposList = reposData.map(repo => `
-     <div class="ui card">
-       <a card="card__name" href=${
-         repo.html_url
-       } target="_blank"><i class="fas fa-book"></i> ${repo.name}</a>
-       <p class="card__description">${
-         repo.description ? repo.description : "No description"
-       }</p>
-      <div class="card__details"> 
-       <span><i class="fas ${
-         repo.language ? "fa-circle" : "fa-code-branch"
-       }"></i> ${repo.language || repo.forks_count}</span>
-       <span><i class="fas fa-star"></i> ${repo.stargazers_count}</span>
-      <span>Updated on ${new Date(repo.updated_at).toLocaleDateString()}</span>
-      </div>
-     </div>`
-    ).join("")
+  const reposList = reposData.map(repo => logFilteredRepos(repo)).join("")
 
   document.querySelector("#app .repos").innerHTML = `
     <div class="search">
@@ -95,9 +100,14 @@ function logRepos() {
   
   document.querySelector("form").addEventListener('submit', (event) => {
     event.preventDefault()
+    
     userId = document.querySelector('input').value
-    console.log(userId)
-    Promise.all[(getRemoteData(userId), getRemoteData(userId, "repos"))]
+    
+    if (userId === '') {
+      return
+    } else {
+      Promise.all[(getRemoteData(userId), getRemoteData(userId, "repos"))]
+    }
   })
 
   document.querySelector(".sort").addEventListener("change", (event) => {
@@ -105,25 +115,7 @@ function logRepos() {
 
     if (languages.includes(event.target.value)) {
       const found = reposData.filter(repo => repo.language === event.target.value)
-      
-      const list = found.map(item => `
-        <div class="ui card">
-          <a card="card__name" href=${
-            item.html_url
-          } target="_blank"><i class="fas fa-book"></i> ${item.name}</a>
-          <p class="card__description">${
-            item.description ? item.description : "No description"
-          }</p>
-         <div class="card__details">  
-          <span><i class="fas ${
-            item.language ? "fa-circle" : "fa-code-branch"
-          }"></i> ${item.language || item.forks_count}</span>
-          <span><i class="fas fa-star"></i> ${item.stargazers_count}</span>
-          <span>Updated on ${new Date(item.updated_at).toLocaleDateString()}</span>
-         </div>
-        </div>`
-      ).join("")
-
+      const list = found.map(repo => logFilteredRepos(repo)).join('')
       document.querySelector(".results").innerHTML = `${list}`
     }    
   })
@@ -133,62 +125,11 @@ function logRepos() {
 
     if (event.target.value === "forks") {
       const forked = reposData.filter(repo => repo.forks_count > 0)
-
-      list = forked.map(item => `
-        <div class="ui card">
-          <a card="card__name" href=${
-            item.html_url
-          } target="_blank"><i class="fas fa-book"></i> ${item.name}</a>
-          <p class="card__description">${
-            item.description ? item.description : "No description"
-          }</p>
-        <div class="card__details"> 
-          <span><i class="fas ${
-            item.language ? "fa-circle" : "fa-code-branch"
-          }"></i> ${item.language || item.forks_count}</span>
-          <span><i class="fas fa-star"></i> ${item.stargazers_count}</span>
-          <span>Updated on ${new Date(item.updated_at).toLocaleDateString()}</span>
-        </div>
-        </div>`
-      ).join("")
+      list = forked.map(item => logFilteredRepos(item)).join('')
     } else if (event.target.value === "stars") {
-      const stars = getStars(reposData)
-
-      list = stars.map(repo => `
-         <div class="ui card">
-           <a card="card__name" href=${
-             repo.html_url
-           } target="_blank"><i class="fas fa-book"></i> ${repo.name}</a>
-           <p class="card__description">${
-             repo.description ? repo.description : "No description"
-           }</p>
-         <div class="card__details"> 
-          <span><i class="fas ${
-            repo.language ? "fa-circle" : "fa-code-branch"
-          }"></i> ${repo.language || repo.forks_count}</span>
-          <span><i class="fas fa-star"></i> ${repo.stargazers_count}</span>
-          <span>Updated on ${new Date(repo.updated_at).toLocaleDateString()}</span>
-         </div>
-        </div>`
-      ).join("")
+      list = getStars(reposData).map(repo => logFilteredRepos(repo)).join('')
     } else {
-      list = reposData.map(repo => `
-        <div class="ui card">
-          <a card="card__name" href=${
-            repo.html_url
-          } target="_blank"><i class="fas fa-book"></i> ${repo.name}</a>
-          <p class="card__description">${
-            repo.description ? repo.description : "No description"
-          }</p>
-          <div class="card__details"> 
-            <span><i class="fas ${
-              repo.language ? "fa-circle" : "fa-code-branch"
-            }"></i> ${repo.language || repo.forks_count}</span>
-            <span><i class="fas fa-star"></i> ${repo.stargazers_count}</span>
-            <span>Updated on ${new Date(repo.updated_at).toLocaleDateString()}</span>
-         </div>
-        </div>`
-      ).join("")
+      list = reposData.map(item => logFilteredRepos(item)).join('')
     }
 
     document.querySelector(".results").innerHTML = `${list}`
