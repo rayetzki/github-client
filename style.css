@@ -55,13 +55,15 @@ ul li {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 100px;
+}
+
+.search > * {
+  margin-right: 10px;
 }
 
 .input {
   width: 200px;
   height: 38px;
-  margin-left: 8.7em;
 }
 
 hr {
@@ -71,13 +73,11 @@ hr {
 
 @media only screen and (max-width: 600px) {
   .search {
-    display: flex;
     flex-direction: column;
-    align-items: flex-start;
     margin: 15px 10px;
   }
   
   .dropdown {
     margin: 5px 122px;
-  } 
+  }
 }
