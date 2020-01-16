@@ -35,20 +35,20 @@ ul li {
 }
 
 .card > * {
-  padding: 20px;
+  padding: 1em;
 }
 
 .card a {
   font-size: 1.2em;
 }
 
-.card__description {
-  position: relative;
-  bottom: 30px;
+.card__details {
+  display: flex;
+  flex-direction: column;
 }
 
 .card__details > * {
-  margin-left: 5px;
+  padding-top: 5px;
 }
 
 .search {
