@@ -2,19 +2,17 @@ let userId
 let userData
 let reposData
 
-function transformLanguageList() {
+function transformLanguageList(reposInfo) {
   const langArr = []
-  reposData.forEach(repo =>
+  reposInfo.forEach(repo =>
     repo.language !== null ? langArr.push(repo.language) : null
   )
   return Array.from(new Set(langArr))
 }
 
 function getLanguages() {
-  let languageList = transformLanguageList()
-  return languageList.map(language => {
-    return `<option value=${language}>${language}</option>`
-  });
+  const languageList = transformLanguageList(reposData)
+  return languageList.map(language => `<option value=${language}>${language}</option>`)
 }
 
 function getStars() {
@@ -30,37 +28,31 @@ function getRemoteData(userId = "rayetzki", dataType = "") {
         logRepos()
       } else {
         userData = data
-        logUser()
+        logUser(userData)
       }
     })
 }
 
 Promise.all[(getRemoteData(), getRemoteData("rayetzki", "repos"))]
 
-async function logUser(data) {
-  const userInfo = {
-    login: userData.name,
-    avatar: userData.avatar_url,
-    email: userData.email,
-    blog: userData.blog
-  }
+function logUser(userData) {
+  const { name, avatar_url, email, blog } = userData
 
   document.querySelector("#app .user").innerHTML = `
     <header class="ui container">
       <div class="ui small image">
-        <img class="header__avatar" src=${userInfo.avatar}>
+        <img class="header__avatar" src=${avatar_url}>
       </div>
       <div class="header__info">
-      <p class="header__login">${userInfo.login}</p>
-      <a class="header__email"><i class="fas fa-envelope"></i> ${userInfo.email}<a>
-      <a class="header__blog" target="_blank"><i class="fas fa-link"></i> ${userInfo.blog}<a>
+        <p class="header__login">${name}</p>
+        <a class="header__email"><i class="fas fa-envelope"></i> ${email}<a>
+        <a class="header__blog" target="_blank"><i class="fas fa-link"></i> ${blog}<a>
       </div>
     </header>`
 }
 
 function logRepos() {
-  let list = reposData
-    .map(repo => `
+  const reposList = reposData.map(repo => `
      <div class="ui card">
        <a card="card__name" href=${
          repo.html_url
@@ -94,17 +86,17 @@ function logRepos() {
      </div>
     <hr />
     <div class="results">
-      ${list}
+      ${reposList}
     </div>
    </div>`
 
-  document.querySelector(".sort").addEventListener("change", function(event) {
-    let list
-    const languages = transformLanguageList()
+  document.querySelector(".sort").addEventListener("change", (event) => {
+    const languages = transformLanguageList(reposData)
+
     if (languages.includes(event.target.value)) {
       const found = reposData.filter(repo => repo.language === event.target.value)
       
-      list = found.map(item => `
+      const list = found.map(item => `
         <div class="ui card">
           <a card="card__name" href=${
             item.html_url
@@ -112,20 +104,18 @@ function logRepos() {
           <p class="card__description">${
             item.description ? item.description : "No description"
           }</p>
-        <div class="card__details">  
+         <div class="card__details">  
           <span><i class="fas ${
             item.language ? "fa-circle" : "fa-code-branch"
           }"></i> ${item.language || item.forks_count}</span>
           <span><i class="fas fa-star"></i> ${item.stargazers_count}</span>
-          <span>Updated on ${new Date(
-            item.updated_at
-          ).toLocaleDateString()}</span>
-        </div>
+          <span>Updated on ${new Date(item.updated_at).toLocaleDateString()}</span>
+         </div>
         </div>`
       ).join("")
-    }
 
-    document.querySelector(".results").innerHTML = `${list}`
+      document.querySelector(".results").innerHTML = `${list}`
+    }    
   })
 
   document.querySelector(".filter").addEventListener("change", event => {
