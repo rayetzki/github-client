@@ -1,11 +1,11 @@
-let userId;
-let userData;
-let reposData;
+let userId
+let userData
+let reposData
 
 function transformLanguageList() {
-   let langArr = [];
-   let languages = reposData.forEach(repo => repo.language !== null ? langArr.push(repo.language) : null);
-   return Array.from(new Set(langArr));
+  const langArr = []
+  reposData.forEach(repo => repo.language !== null ? langArr.push(repo.language) : null)
+  return Array.from(new Set(langArr))
 }
 
 function getLanguages() {
@@ -19,29 +19,31 @@ function getStars() {
   return reposData.sort((a,b) => b.stargazers_count - a.stargazers_count)
 }
 
-fetch('https://api.github.com/users/' + (userId || 'rayetzki'))
-  .then(users => users.json())
-  .then(data => {
-    userData = data;
-    logUser();
-    logRepos();
-  })
+function getRemoteData(userId = 'rayetzki', dataType = '') {
+  fetch(`https://api.github.com/users/${userId}` + `${dataType ? '/repos' : ''}`)
+    .then(users => users.json())
+    .then(data => {
+      if (dataType) {
+        reposData = data
+        logRepos()
+      } else {
+        userData = data
+        logUser()
+      }
+    })
+}
 
-fetch('https://api.github.com/users/'+ (userId || 'rayetzki') +'/repos')
-  .then(users => users.json())
-  .then(data => {
-    reposData = data;
-    logRepos();
-    getStars();
-  })
+Promise.all[getRemoteData(), getRemoteData('rayetzki', 'repos')]
 
-function logUser(data) {
+async function logUser(data) {
   const userInfo = {
     login: userData.name,
     avatar: userData.avatar_url,
     email: userData.email,
     blog: userData.blog
   }
+
+  await console.dir(userData)
   
   document.querySelector('#app .user').innerHTML = `
      <header class="ui container">
