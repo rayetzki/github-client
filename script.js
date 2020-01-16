@@ -5,6 +5,10 @@ window.addEventListener('load', () => {
   Promise.all[(getRemoteData(userId), getRemoteData(userId, "repos"))]
 })
 
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => document.querySelector('#loadingWrapper').style.display = 'none', 1000)
+})
+
 function transformLanguageList(reposInfo) {
   const langArr = []
   reposInfo.forEach(repo =>
@@ -35,7 +39,7 @@ function getRemoteData(id, dataType = "") {
 }
 
 function logUser(userData) {
-  const { name, avatar_url, email, blog, location } = userData
+  const { name, avatar_url, blog, location } = userData
 
   document.querySelector("#app .user").innerHTML = `
     <header class="ui container">
@@ -44,7 +48,6 @@ function logUser(userData) {
       </div>
       <div class="header__info">
         <p class="header__login">${name}</p>
-        <a class="header__email"><i class="fas fa-envelope"></i> ${email || 'No email provided'}</a>
         <a class="header__blog" target="_blank" href=https://${blog}><i class="fas fa-link"></i>${blog}</a>
         <p class="header__location"><i class="fas fa-map-marker-alt"></i>${location}</p>
       </div>
