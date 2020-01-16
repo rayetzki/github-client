@@ -1,5 +1,9 @@
-let userId
 let reposData
+let userId = 'rayetzki'
+
+window.addEventListener('load', () => {
+  Promise.all[(getRemoteData(userId), getRemoteData(userId, "repos"))]
+})
 
 function transformLanguageList(reposInfo) {
   const langArr = []
@@ -10,16 +14,15 @@ function transformLanguageList(reposInfo) {
 }
 
 function getLanguages(reposData) {
-  const languageList = transformLanguageList(reposData)
-  return languageList.map(language => `<option value=${language}>${language}</option>`)
+  return transformLanguageList(reposData).map(language => `<option value=${language}>${language}</option>`)
 }
 
 function getStars(reposData) {
   return reposData.sort((a, b) => b.stargazers_count - a.stargazers_count)
 }
 
-function getRemoteData(userId = "rayetzki", dataType = "") {
-  fetch(`https://api.github.com/users/${userId}` + `${dataType ? "/repos" : ""}`)
+function getRemoteData(id, dataType = "") {
+  fetch(`https://api.github.com/users/${id}` + `${dataType ? "/repos" : ""}`)
     .then(users => users.json())
     .then(data => {
       if (dataType) {
@@ -32,7 +35,7 @@ function getRemoteData(userId = "rayetzki", dataType = "") {
 }
 
 function logUser(userData) {
-  const { name, avatar_url, email, blog } = userData
+  const { name, avatar_url, email, blog, location } = userData
 
   document.querySelector("#app .user").innerHTML = `
     <header class="ui container">
@@ -41,8 +44,9 @@ function logUser(userData) {
       </div>
       <div class="header__info">
         <p class="header__login">${name}</p>
-        <a class="header__email"><i class="fas fa-envelope"></i> ${email}<a>
-        <a class="header__blog" target="_blank"><i class="fas fa-link"></i> ${blog}<a>
+        <a class="header__email"><i class="fas fa-envelope"></i> ${email || 'No email provided'}</a>
+        <a class="header__blog" target="_blank" href=https://${blog}><i class="fas fa-link"></i>${blog}</a>
+        <p class="header__location"><i class="fas fa-map-marker-alt"></i>${location}</p>
       </div>
     </header>`
 }
@@ -68,23 +72,33 @@ function logRepos() {
 
   document.querySelector("#app .repos").innerHTML = `
     <div class="search">
-     <div class="ui input">
-      <input type="text" placeholder="Search...">
-     </div>
-      <select class="ui filter dropdown">
+     <form>
+      <div class="ui input">
+        <input type="text" placeholder="Search...">
+      </div>
+      <button type="submit" class="ui button">Find</button>
+     </form>
+     <select class="ui filter dropdown">
        <option value="all">All</option>
        <option value="forks">Forks</option>
        <option value="stars">Stars</option>
-      </select>
-      <select class="ui sort dropdown">
+     </select>
+     <select class="ui sort dropdown">
         ${getLanguages(reposData)}
-      </select>
-     </div>
+     </select>
+    </div>
     <hr />
     <div class="results">
       ${reposList}
     </div>
    </div>`
+  
+  document.querySelector("form").addEventListener('submit', (event) => {
+    event.preventDefault()
+    userId = document.querySelector('input').value
+    console.log(userId)
+    Promise.all[(getRemoteData(userId), getRemoteData(userId, "repos"))]
+  })
 
   document.querySelector(".sort").addEventListener("change", (event) => {
     const languages = transformLanguageList(reposData)
@@ -180,5 +194,3 @@ function logRepos() {
     document.querySelector(".results").innerHTML = `${list}`
   })
 }
-
-Promise.all[(getRemoteData(), getRemoteData("rayetzki", "repos"))]

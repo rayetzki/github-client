@@ -1,3 +1,7 @@
+.ui.container {
+  display: flex;
+}
+
 header img {
   width: 130px;
   height: 130px;
@@ -10,17 +14,30 @@ header p {
 
 header a {
   color: black;
-  opacity: .7;
+  opacity: 0.7;
   margin-left: 12px;
   cursor: pointer;
 }
 
 .header__info {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .header__login {
-  margin-left: .5em;
+  margin-left: 0.5em;
+}
+
+.header__location {
+  font-size: 1em;
+  margin-left: 1em;
+}
+
+.header__login,
+.header__blog,
+.header__location {
+  margin-top: 5px;
 }
 
 .results {
@@ -61,9 +78,17 @@ ul li {
   margin-right: 10px;
 }
 
+.search button, .input, .dropdown {
+  height: 40px;
+}
+
 .input {
   width: 200px;
-  height: 38px;
+}
+
+.fa,
+.fas {
+  margin-right: 5px;
 }
 
 hr {
@@ -76,7 +101,7 @@ hr {
     flex-direction: column;
     margin: 15px 10px;
   }
-  
+
   .dropdown {
     margin: 5px 122px;
   }
