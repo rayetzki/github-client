@@ -23,6 +23,7 @@ header a {
   opacity: 0.7;
   margin-left: 12px;
   cursor: pointer;
+  word-break: break-all;
 }
 
 .header__info {
@@ -32,7 +33,6 @@ header a {
 }
 
 .header__login {
-  margin-left: 0.5em;
   text-decoration: underline;
 }
 
@@ -41,10 +41,14 @@ header a {
   margin-left: 1em;
 }
 
+header .ui.small.image {
+  margin-right: 1em;
+}
+
 .header__login,
 .header__blog,
 .header__location {
-  margin-top: 5px;
+  margin: 10px 0 0 10px;
 }
 
 .results {

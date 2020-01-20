@@ -2,12 +2,20 @@ let reposData
 let userId = 'rayetzki'
 
 window.addEventListener('load', () => {
-  Promise.all[(getRemoteData(userId), getRemoteData(userId, "repos"))]
+  loadRemoteData(userId)
 })
 
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => document.querySelector('#loadingWrapper').style.display = 'none', 1000)
 })
+
+function loadRemoteData(userId) {
+  try {
+    Promise.all[(getRemoteData(userId), getRemoteData(userId, "repos"))]
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 function transformLanguageList(reposInfo) {
   const langArr = []
@@ -109,7 +117,7 @@ function logRepos() {
     if (userId === '') {
       return
     } else {
-      Promise.all[(getRemoteData(userId), getRemoteData(userId, "repos"))]
+      loadRemoteData(userId)
     }
   })
 
